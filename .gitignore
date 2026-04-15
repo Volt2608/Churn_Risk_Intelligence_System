@@ -7,7 +7,4 @@ __pycache__/
 *.pyc
 
 # Mac system files
-.DS_Storevenv/
-__pycache__/
-*.pyc
 .DS_Store
