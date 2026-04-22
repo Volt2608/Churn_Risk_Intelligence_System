@@ -11,34 +11,42 @@ Customer churn directly impacts business revenue. This project aims to predict c
 ---
 
 ### Project Structure
-    churn_risk_system/
 
+    churn_risk_system/
     │
-    ├── data/
-    ├── notebooks/
-    │ ├── 1_eda.ipynb
-    │ ├── 2_data_preprocessing.ipynb
-    │ ├── 3_modeling.ipynb
+    ├── app/                     # Application layer
+    │   ├── main.py              # CLI prediction
+    │   ├── streamlit_app.py     # Streamlit UI
     │
-    ├── models/
-    │ ├── train.py
-    │ ├── evaluate.py
-    │ ├── predict.py
-    │ ├── churn_model.pkl
-    │ ├── scaler.pkl
-    │ ├── feature_names.pkl
+    ├── artifacts/               # Saved models and objects
+    │   ├── churn_model.pkl
+    │   ├── scaler.pkl
+    │   ├── feature_names.pkl
     │
-    ├── app/
-    │ ├── main.py
+    ├── data/                    # Dataset storage
+    │   ├── raw/
+    │   │   └── European_Bank_data.csv
     │
-    ├── requirements.txt
+    ├── models/                  # Training and evaluation scripts
+    │   ├── train.py
+    │   ├── evaluate.py
+    │   ├── predict.py
+    │
+    ├── notebooks/               # Development notebooks
+    │   ├── 1_eda.ipynb
+    │   ├── 2_data_preprocessing.ipynb
+    │   ├── 3.modeling.ipynb
+    │   └── research_paper.md    # Detailed analysis and findings
+    │
     ├── README.md
+    ├── requirements.txt
+    ├── .gitignore
 
 ---
 
 ### Approach
 
-#### 1. Exploratory Data Analysis
+### 1. Exploratory Data Analysis
 - Identified churn patterns across geography, age, and customer activity  
 - Observed moderate class imbalance (~80/20)
 
@@ -68,10 +76,12 @@ Customer churn directly impacts business revenue. This project aims to predict c
 
 ### Key Results
 
-| Model | Recall | F2 Score | Insight |
-|------|--------|---------|--------|
-| Logistic Regression | 0.83 | 0.63 | Best for detecting churn |
-| Random Forest | 0.67 | 0.65 | Balanced performance |
+| Model                     | Accuracy | Precision | Recall       | F1 Score     | F2 Score     | FN (Missed Churn) | Verdict                  |
+| ------------------------- | ------ | --------- | ------------ | ------------ | ------------ | ----------------- | ------------------------ |
+| Logistic Regression (0.4) | 0.85 🟢 | 0.324 🟡  | **0.826 🟢** | 0.466 🟡     | 0.631 🟢     | **71 🟢**         | Best for churn detection |
+| Random Forest (0.3)       | 0.826 🟡 | 0.563 🟢  | 0.661 🟡     | 0.608 🟢     | **0.639 🟢** | 138 🟡            | Best balance             |
+| XGBoost (0.3)             | 0.842 🟢 | 0.609 🟢  | 0.624 🟡     | **0.617 🟢** | 0.621 🟢     | 153 🟡            | Strong alternative       |
+| Decision Tree             | 0.786 🔴 | 0.474 🟡  | 0.499 🔴     | 0.486 🔴     | 0.494 🔴     | 204 🔴            | Not suitable             |
 
 ---
 
@@ -116,6 +126,24 @@ python main.py
 
 ---
 
+### End-to-End Workflow
+
+    Raw Dataset (European_Bank_data.csv)
+            ↓
+    Data Preprocessing & Feature Engineering (Notebooks)
+            ↓
+    Model Training & Evaluation
+            ↓
+    Saved Artifacts (Model, Scaler, Feature Names)
+            ↓
+    Prediction Pipeline (predict.py)
+            ↓
+    Streamlit Application (User Interface)
+            ↓
+    Real-time Churn Prediction Output
+
+---
+
 ### Tech Stack
 - Python  
 - Pandas, NumPy  
@@ -124,5 +152,10 @@ python main.py
 
 ---
 
-#git rm -r --cached .venv## Key Learning
+### Git
+
+rm -r --cached .venv
+
+
+### Key Learning
 Model performance should be aligned with business objectives. In churn prediction, recall is more important than accuracy, as missing a churn customer has higher cost than false alarms.
