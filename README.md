@@ -17,7 +17,7 @@ Customer churn directly impacts business revenue. This project aims to predict c
 
 ### 📊 Dataset Description
 
-| Column            | Description                          |
+| Column           | Description                          |
 |------------------|--------------------------------------|
 | CustomerId       | Unique customer identifier           |
 | Surname          | Customer surname                     |
