@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import io
 import os
-import textwrap
 from datetime import datetime
 from typing import Any
 
@@ -16,6 +15,9 @@ import streamlit.components.v1 as components
 from matplotlib.backends.backend_pdf import PdfPages
 
 st.set_page_config(page_title="Churn Risk Intelligence", layout="wide")
+
+if "analyze_clicked" not in st.session_state:
+    st.session_state["analyze_clicked"] = False
 
 # Visual direction: medium-tone pastel palette (readable, not too light/dark)
 PALETTE = {
@@ -1039,10 +1041,39 @@ st.write("")
 
 # Top cards
 c1, c2, c3, c4 = st.columns(4)
-c1.metric("Churn Probability", f"{prob:.2%}")
-c2.metric("Risk Flag", risk_label)
-c3.metric("Expected Annual Value (EUR)", f"EUR {annual_value_customer:,.0f}")
-c4.metric("Expected Annual Loss (EUR)", f"EUR {expected_loss_customer:,.0f}")
+if st.session_state["analyze_clicked"]:
+
+    c1, c2, c3, c4 = st.columns(4)
+    c1.metric("Churn Probability", f"{prob:.2%}")
+    c2.metric("Risk Flag", risk_label)
+    c3.metric("Expected Annual Value (EUR)", f"EUR {annual_value_customer:,.0f}")
+    c4.metric("Expected Annual Loss (EUR)", f"EUR {expected_loss_customer:,.0f}")
+
+if prob >= threshold:
+    st.error(f"⚠️ High Risk Customer ({prob:.1%}) — Immediate retention action required")
+else:
+    st.success(f"✅ Low Risk Customer ({prob:.1%}) — No immediate action needed")
+
+st.markdown("### 🔍 Why is this customer at risk?")
+
+drivers = []
+
+if age > 45:
+    drivers.append("Customer belongs to higher age group associated with churn patterns")
+if balance > 100000:
+    drivers.append("High balance customers often explore alternative banks")
+if is_active == 0:
+    drivers.append("Inactive customers show significantly higher churn probability")
+if products <= 1:
+    drivers.append("Low product engagement (1 or fewer products)")
+if geography == "Germany":
+    drivers.append("Germany region shows relatively higher churn trends")
+
+if drivers:
+    for d in drivers:
+        st.write(f"- {d}")
+else:
+    st.write("- No strong churn indicators detected")
 
 # Tabs (core modules + expanded analytics)
 tab_calc, tab_whatif, tab_portfolio, tab_features = st.tabs([
