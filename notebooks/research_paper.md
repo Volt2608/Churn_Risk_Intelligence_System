@@ -1,177 +1,166 @@
-# Churn Risk Intelligence System for Retail Banking
+# A Project Report on Customer Churn Prediction using Machine Learning
 
+**Jyotika Bhatia**  
+Data Science Intern  
+Noida, India  
 
-|**Jyotika Bhatia**  | **Saiprasad Kagne**|
-|---|---|
-| Data Science Intern | Data Scientist |
-| Noida, India | Unified Mentor, Delhi India |
+**Saiprasad Kagne**  
+Data Scientist  
+Unified Mentor, Delhi, India  
+
+---
 
 ## Abstract
-Customer churn is a major risk for retail banking because it directly affects customer lifetime value, recurring revenue, and cross-sell potential. This project implements an end-to-end churn prediction system using customer-level banking data and aligns the implementation with product requirements for predictive intelligence, explainability, and decision support. The workflow includes data preprocessing, feature engineering, model development, threshold-based risk scoring, and a Streamlit dashboard for business users. The deployed interface supports customer-level risk estimation, scenario simulation, portfolio-level monitoring, and revenue-at-risk analysis in EUR. The final system is designed to be practical, interpretable, and suitable for retention campaign planning.
+Customer churn is a major risk in retail banking as it directly impacts customer lifetime value and revenue. This project presents an end-to-end churn prediction system using customer-level banking data, with a focus on predictive modeling, interpretability, and business decision support. The workflow includes data preprocessing, feature engineering, model development, and a Streamlit dashboard for interactive usage. The system supports customer-level risk estimation, scenario simulation, and portfolio-level monitoring. The final solution is designed to be practical, interpretable, and useful for retention strategy planning.
 
-**Keywords:** Customer churn, retail banking, machine learning, risk scoring, explainable AI, Streamlit.
+---
+
+## Keywords
+Customer churn, retail banking, machine learning, risk scoring, interpretability, Streamlit
+
+---
 
 ## 1. Introduction
-In retail banking, churn prediction shifts decision-making from reactive to proactive. Instead of analyzing churn after loss happens, predictive models allow institutions to identify likely churners in advance and intervene with targeted offers, service actions, and engagement programs.
+In retail banking, churn prediction enables proactive decision-making. Instead of analyzing churn after it occurs, predictive models help identify customers who are likely to leave and allow timely intervention.
 
-This project was developed as a PRD-driven churn intelligence solution with three priorities:
-1. Predict churn probability at customer level.
-2. Explain key churn drivers to build business trust.
-3. Convert predictions into retention actions and revenue-risk estimates.
+This project focuses on:
+- Predicting churn probability at the customer level  
+- Explaining key drivers behind churn  
+- Supporting business decisions through a simple analytical system  
+
+---
 
 ## 2. Problem Statement
-Banks often have rich customer data but still face:
-1. Limited predictive performance in churn identification.
-2. Lack of quantitative probability scores for prioritization.
-3. Weak explainability for business and regulatory stakeholders.
+Banks often face:
+- Limited ability to accurately identify churners  
+- Lack of probability-based prioritization  
+- Low transparency in model predictions  
 
-As a result, retention programs become broad, expensive, and less effective. This project addresses these gaps with an interpretable predictive system and a decision-focused dashboard.
+As a result, retention strategies become inefficient and costly. This project addresses these challenges using a data-driven and interpretable churn prediction system.
+
+---
 
 ## 3. Objectives
-### 3.1 Primary Objectives
-1. Predict customer churn with high practical accuracy.
-2. Generate churn probability scores (0-1) and binary churn flags.
-3. Identify key churn drivers through model explainability.
 
-### 3.2 Secondary Objectives
-1. Reduce false positives through threshold management.
-2. Improve transparency using feature importance and SHAP/PDP support.
-3. Enable scenario-based churn analysis for business planning.
+### Primary Objectives
+- Predict customer churn with practical accuracy  
+- Generate churn probability scores (0–1)  
+- Identify key churn drivers  
+
+### Secondary Objectives
+- Enable threshold-based decision-making  
+- Provide interpretable insights for business users  
+- Support scenario-based analysis  
+
+---
 
 ## 4. Dataset Description
-Source file used in project code: `data/raw/European_Bank_data.csv`
+The dataset represents customer information from a retail banking context.
 
-| Column | Description |
-|---|---|
-| CustomerId | Unique customer identifier |
-| Surname | Customer surname |
-| CreditScore | Customer creditworthiness |
-| Geography | France, Spain, Germany |
-| Gender | Male / Female |
-| Age | Customer age |
-| Tenure | Years with the bank |
-| Balance | Account balance |
-| NumOfProducts | Number of bank products |
-| HasCrCard | Credit card ownership |
-| IsActiveMember | Activity indicator |
-| EstimatedSalary | Estimated annual salary |
-| Exited | Churn indicator (target) |
+### Key Features
+- CreditScore, Geography, Gender, Age  
+- Tenure, Balance, NumOfProducts  
+- HasCrCard, IsActiveMember, EstimatedSalary  
 
-Project dataset profile:
-1. Total records: 10,000
-2. Churn rate (`Exited=1`): 20.37%
-3. Missing values in raw data: 0 (still handled safely in code pipeline)
+### Target Variable
+- Exited (1 = churn, 0 = retained)
 
-## 5. Methodology (Step-by-Step)
-## 5.1 Data Preprocessing
-1. Remove non-informative fields: `CustomerId`, `Surname`, `Year`.
-2. Handle missing values (pipeline-safe approach):
-   - Numeric columns: median fill
-   - Categorical columns: mode fill
-3. One-hot encode categorical variables (`Geography`, `Gender`) with `drop_first=True`.
-4. Scale numerical feature space using `StandardScaler`.
+### Dataset Profile
+- Total records: 10,000  
+- Churn rate: ~20.37%  
+- Missing values: Not present (handled safely in pipeline)
 
-## 5.2 Feature Engineering
-The following derived features are implemented in training/inference pipeline:
-1. `BalanceSalaryRatio = Balance / (EstimatedSalary + 1)`
-2. `ProductDensity = NumOfProducts / (Tenure + 1)`
-3. `EngagementProduct = IsActiveMember * NumOfProducts`
-4. `AgeTenureInteraction = Age * Tenure`
+---
 
-## 5.3 Train-Test Strategy
-1. Stratified train-test split is used in notebooks to preserve churn distribution.
-2. Optional cross-validation is included through `StratifiedKFold`.
+## 5. Methodology
 
-## 5.4 Model Development
-Models covered in project workflow:
-1. Logistic Regression (baseline and final deployed model for interpretability).
-2. Decision Tree.
-3. Random Forest.
-4. Gradient Boosting.
-5. XGBoost (optional; used where environment supports library).
+### 5.1 Data Preprocessing
+- Removed non-informative features (CustomerId, Surname)  
+- Handled missing values (median for numerical, mode for categorical)  
+- One-hot encoding for categorical variables  
+- Feature scaling using StandardScaler  
 
-## 5.5 Model Evaluation Metrics
-| Metric | Purpose |
-|---|---|
-| Accuracy | Overall correctness |
-| Precision | Controls false churn alarms |
-| Recall | Captures actual churners |
-| F1-score | Balance of precision and recall |
-| ROC-AUC | Discrimination power across thresholds |
+### 5.2 Feature Engineering
+Derived features:
+- BalanceSalaryRatio  
+- ProductDensity  
+- EngagementProduct  
+- AgeTenureInteraction  
 
-The project also uses confusion matrix outputs for operational interpretation.
+### 5.3 Train-Test Strategy
+- Stratified train-test split  
+- Optional cross-validation using StratifiedKFold  
 
-## 5.6 Explainability
-Explainability support is implemented through:
-1. Global feature importance ranking.
-2. SHAP-based importance (environment dependent with safe fallback).
-3. Partial dependence plots (PDP) for top features.
+### 5.4 Model Development
+Models implemented:
+- Logistic Regression (baseline and final model)  
+- Decision Tree  
+- Random Forest  
+- Gradient Boosting  
+- XGBoost (optional, environment-dependent)
 
-This ensures the system can be explained to both technical and non-technical stakeholders.
+### 5.5 Model Evaluation
+Metrics used:
+- Accuracy  
+- Precision  
+- Recall  
+- F1 Score  
+- ROC-AUC  
+
+Higher recall is prioritized to minimize missed churners, as the cost of losing a customer is typically higher than the cost of unnecessary retention efforts.
+
+### 5.6 Interpretability
+Interpretability is supported through:
+- Feature importance analysis  
+- Basic model-driven insights for business understanding  
+
+---
 
 ## 6. Results Summary
-Notebook experiments report that Logistic Regression provides the most practical trade-off for this use case (strong recall and low missed-churn count), supporting business preference for identifying at-risk customers early.
 
-Representative model comparison (from project experiments):
+| Model                | Accuracy | Precision | Recall | F1 Score |
+|---------------------|----------|----------|--------|----------|
+| Logistic Regression | 0.85     | 0.324    | 0.826  | 0.466    |
+| Random Forest       | 0.826    | 0.563    | 0.661  | 0.608    |
+| XGBoost (optional)  | 0.842    | 0.609    | 0.624  | 0.617    |
+| Decision Tree       | 0.786    | 0.474    | 0.499  | 0.486    |
 
-| Model | Accuracy | Precision | Recall | F1 Score | Verdict |
-|---|---:|---:|---:|---:|---|
-| Logistic Regression | 0.85 | 0.324 | 0.826 | 0.466 | Final deployed model |
-| Random Forest | 0.826 | 0.563 | 0.661 | 0.608 | Good balance alternative |
-| XGBoost (optional) | 0.842 | 0.609 | 0.624 | 0.617 | Strong optional model |
-| Decision Tree | 0.786 | 0.474 | 0.499 | 0.486 | Weaker generalization |
+Logistic Regression is selected as the final model due to its strong recall and interpretability, making it suitable for identifying at-risk customers in a business context.
 
-Note: Exact values can vary slightly with environment and retraining.
+---
 
-## 7. Streamlit Application (PRD Modules)
-The deployed application in `app/streamlit_app.py` includes:
-1. Customer churn risk calculator.
-2. Probability distribution and risk-threshold visualizations.
-3. Feature importance dashboard.
-4. What-if scenario simulator.
-5. Portfolio-level analytics:
-   - Risk bands
-   - Geography x Gender heatmap
-   - Revenue-at-risk (EUR)
-   - Save-candidate prioritization
-6. Executive summary export (PDF) for stakeholders.
+## 7. Streamlit Application
 
-### User Capabilities
-1. Enter customer profile and account attributes.
-2. Adjust engagement/product inputs and simulate risk changes.
-3. Observe churn probability delta and expected revenue-loss impact.
-4. Review business recommendations driven by prediction outputs.
+The deployed application includes:
+- Customer churn prediction interface  
+- Probability-based risk scoring  
+- Scenario simulation (what-if analysis)  
+- Feature importance insights  
+- Portfolio-level analytics  
+
+### User Capabilities   
+- Input customer data  
+- Simulate changes in features  
+- Observe churn probability changes  
+- Support retention decision-making  
+
+---
 
 ## 8. Business Recommendations
-Based on model behavior and portfolio diagnostics:
-1. Prioritize customers with high expected loss and high churn probability for immediate outreach.
-2. Design reactivation programs for inactive members (`IsActiveMember=0`).
-3. Use cross-sell strategies for low-product customers (`NumOfProducts<=1`) to increase stickiness.
-4. Apply geography-specific interventions where predicted risk concentration is highest.
-5. Operate threshold tuning based on business cost, not metric score alone.
+- Prioritize high-risk customers for targeted retention campaigns  
+- Focus on inactive users for re-engagement  
+- Increase product usage to improve customer retention  
+- Apply threshold tuning based on business cost considerations  
 
-## 9. Deliverables Mapping to PRD
-| PRD Deliverable | Project Status |
-|---|---|
-| Research paper (EDA, insights, recommendations) | Completed (this document) |
-| Streamlit dashboard (live analytics) | Completed (`app/streamlit_app.py`) |
-| Executive summary for stakeholders | Completed (in-app PDF export) |
+---
 
-## 10. Conclusion
-This project reframes churn prediction as a business decision system rather than a standalone model exercise. By combining feature-engineered churn modeling, explainability modules, and an action-oriented dashboard, the solution supports proactive retention strategy with measurable business value. The final architecture is practical for interview demonstration, stakeholder communication, and iterative improvement in production-like settings.
+## 9. Conclusion
+This project demonstrates how machine learning can be applied to solve a real-world business problem. By combining predictive modeling with an interactive dashboard, the system enables proactive and data-driven retention strategies. The approach is practical, interpretable, and suitable for real-world applications.
 
-## Appendix A: Reproducibility
-1. Install dependencies:
+---
+
+## 10. Reproducibility
+
+### Install dependencies
 ```bash
 pip install -r requirements.txt
-```
-2. Run application:
-```bash
-cd /Users/frolt/Desktop/churn_risk_system
-streamlit run app/streamlit_app.py
-```
-3. Key implementation files:
-   - `models/train.py`
-   - `models/evaluate.py`
-   - `models/predict.py`
-   - `app/streamlit_app.py`

@@ -1029,13 +1029,22 @@ components.html(hero_html, height=220, scrolling=False)
 
 col1, col2, col3 = st.columns([1,2,1])
 
-with col2:
-    if st.button("Analyze Customer Risk"):
-        st.session_state["show_hint"] = True
+@st.dialog("How to Use This App")
+def show_help():
+    st.markdown("""
+    ### 🚀 Quick Guide
 
-if st.session_state.get("show_hint"):
-    st.toast("**Please Enter customer inputs from the left sidebar.**", icon="ℹ️")
-    st.session_state["show_hint"] = False
+    **Step 1:** Enter customer details from the **left sidebar**  
+    **Step 2:** Adjust account & engagement inputs  
+    **Step 3:** Click **🔍 Predict Churn Risk**  
+    **Step 4:** Review churn probability and insights below  
+
+    ---
+    💡 **Tip:** Try different inputs to simulate churn scenarios, you can also download a PDF report of the results.
+    """)
+with col2:
+    if st.button("ℹ️ How It Works"):
+        show_help()
 
 st.write("")
 
@@ -1046,13 +1055,21 @@ if st.session_state["analyze_clicked"]:
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Churn Probability", f"{prob:.2%}")
     c2.metric("Risk Flag", risk_label)
-    c3.metric("Expected Annual Value (EUR)", f"EUR {annual_value_customer:,.0f}")
-    c4.metric("Expected Annual Loss (EUR)", f"EUR {expected_loss_customer:,.0f}")
+    c3.metric(label="Expected Annual Value", value=f"{annual_value_customer:.0f}")
+    c4.metric(label="Expected Annual Loss", value=f"{expected_loss_customer:.0f}")
 
 if prob >= threshold:
-    st.error(f"⚠️ High Risk Customer ({prob:.1%}) — Immediate retention action required")
+    st.error(
+        f"🚨 High Risk Customer ({prob:.1%})\n\n"
+        "This customer shows a strong likelihood of churn.\n"
+        "👉 Immediate retention action is recommended (targeted offers, engagement calls, or service improvements)."
+    )
 else:
-    st.success(f"✅ Low Risk Customer ({prob:.1%}) — No immediate action needed")
+    st.success(
+        f"✅ Low Risk Customer ({prob:.1%})\n\n"
+        "No immediate retention action required.\n"
+        "👉 Maintain engagement and continue monitoring behavior."
+    )
 
 st.markdown("### 🔍 Why is this customer at risk?")
 
